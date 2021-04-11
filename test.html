@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>ZIM - Code Creativity</title>
+
+
+<script src="https://zimjs.org/cdn/1.3.2/createjs.js"></script>
+<script src="https://zimjs.org/cdn/cat/03/zim.js"></script>
+<script src="https://zimjs.org/cdn/physics_2.1.js"></script>
+<script src="https://zimjs.org/cdn/Box2dWeb-2.1.a.3.min.js"></script>
+
+
+<script>
+
+
+const scaling = "fit"; // this will resize to fit inside the screen dimensions
+const width = 1024;
+const height = 768;
+const color = light; // ZIM colors like green, blue, pink, faint, clear, etc.
+const outerColor = dark; // any HTML colors like "violet", "#333", etc. are fine to use
+const assets = ["germImage.png", "peopleImage.png", "tubeImage.png"];
+
+const frame = new Frame(scaling, width, height, color, outerColor, assets);
+frame.on("ready", () => { // ES6 Arrow Function - like function(){}
+    zog("ready from ZIM Frame"); // logs in console (F12 - choose console)
+
+    const stage = frame.stage;
+    let stageW = frame.width;
+    let stageH = frame.height;
+
+    //startGame();
+   function startGame(){
+       zog("startGame");
+
+       const intro = new Pane({
+           width: 700,
+           height:500,
+           displayClose:false,
+           backdropClose: false,
+           corner: [150, 50, 150, 50],
+           backgroundColor: "#3b393a",
+           backdropColor: "rgba(0, 0, 0, .5)",
+       }).show();
+
+       const gameName = new Label({
+           text: "Covid-19 BlockBreaker",
+           size: 50,
+           color: "#ff534f",
+       }).center(intro).mov(0, -175);
+
+       const instructions = new Label({
+           text: "Deflect all Covid-19 germs away from the people and into the tube to win!",
+           lineWidth: 600,
+           align: "center",
+           size: 35,
+           color: white,
+       }).center(intro).mov(0, -20);
+
+       const controls = new Label({
+           text: "Use the arrow keys to move the mask",
+           align: "center",
+           size: 20,
+           color: white
+       }).center(intro).mov(0, 80);
+
+       const play = new Label({
+           text: "Play",
+           size: 35,
+           color: white
+       });
+
+       const start = new Button({
+           label: play,
+           backgroundColor: "rgba(13, 20, 29)",
+           rollBackgroundColor: "rgba(19, 29, 42)",
+           corner:10
+       }).pos(0, 40, CENTER, BOTTOM, intro).tap(() => {
+           intro.hide();
+           playGame();
+           stage.update();
+       });
+
+   }; //end of startGame();
+
+    //playGame();
+    function playGame(){
+
+        const people = asset("peopleImage.png").centerReg().sca(.8).mov(0, 300);
+
+        const germ = asset("germImage.png").centerReg().sca(.4);
+
+        const tube = asset("tubeImage.png").centerReg().sca(.4).rot(45).loc(955, 71);
+
+
+
+    }
+
+
+
+
+
+
+    stage.update(); // this is needed to show any changes
+
+}); // end of ready
+
+</script>
+
+<meta name="viewport" content="width=device-width, user-scalable=no" />
+
+</head>
+
+<body>
+<!-- canvas with id="myCanvas" is made by zim Frame -->
+</body>
+</html>

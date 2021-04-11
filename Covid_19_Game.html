@@ -1,0 +1,540 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Physics function test</title>
+
+<!-- Welcome to ZIM at https://zimjs.com - Code Creativity!                              -->
+<!-- ZIM runs on the HTML Canvas powered by JavaScript and CreateJS https://createjs.com -->
+<!-- ZIM is free to use. You can donate to help improve ZIM at https://zimjs.com/donate  -->
+
+<script src="https://zimjs.org/cdn/1.3.2/createjs.js"></script>
+<script src="https://zimjs.org/cdn/cat/03/zim.js"></script>
+<!-- use zimjs.com/distill for minified individual functions! -->
+
+<script src="https://zimjs.org/cdn/Box2dWeb-2.1.a.3.min.js"></script>
+<script src="https://zimjs.org/cdn/physics_2.1.js"></script>
+
+<script src="https://zimjs.org/cdn/game_2.4.js"></script>
+
+
+<script>
+
+// SCALING OPTIONS
+// scaling can have values as follows with full being the default
+// "fit"	sets canvas and stage to dimensions and scales to fit inside window size
+// "outside"	sets canvas and stage to dimensions and scales to fit outside window size
+// "full"	sets stage to window size with no scaling
+// "tagID"	add canvas to HTML tag of ID - set to dimensions if provided - no scaling
+
+const scaling = "fit"; // this will resize to fit inside the screen dimensions
+const width = 1024;
+const height = 1000;
+const color = dark; // ZIM colors like green, blue, pink, faint, clear, etc.
+const outerColor = dark; // any HTML colors like "violet", "#333", etc. are fine to use
+const path = "assets/";
+const assets = ["germ.png", "tube.png", "mask.png", "people2.png", "background4.jpg", "suction_1.mp3", "music.mp3"];
+var progress = new ProgressBar({foregroundColor: "#6d130e", backgroundColor: "#3b393a"});
+
+const frame = new Frame(scaling, width, height, color, outerColor, assets, path, progress);
+frame.on("ready", () => { // ES6 Arrow Function - like function(){}
+    zog("ready from ZIM Frame"); // logs in console (F12 - choose console)
+
+    const stage = frame.stage;
+    let stageW = frame.width;
+    let stageH = frame.height;
+
+    // see https://zimjs.com/learn.html for video and code tutorials
+    // see https://zimjs.com/docs.html for documentation
+    // see https://zimjs.com/bits.html for 64 Interactive Media techniques
+
+    // *** NOTE: ZIM Cat defaults to time in seconds
+    // All previous versions, examples, videos, etc. have time in milliseconds
+    // This can be set back with TIME = "milliseconds" but we suggest you give it a try!
+    // There will be a warning in the conslole if your animation is not moving ;-)
+
+    // put your code here (you can delete this sample code)
+    // create physics world without top border for germs to fall down
+
+    //build();
+    // function build(){
+    //     const background = asset("background4.jpg").centerReg().sca(.7).alp(.6);
+
+    //     const paneLost = new Pane({
+    //         width: 500,
+    //         height:500,
+    //         displayClose:false,
+    //         backdropClose: false,
+    //         corner: [250, 250, 250, 250],
+    //         backgroundColor: "#3b393a",
+    //         backdropColor: "rgba(0, 0, 0, .2)",
+    //     }).show();
+
+    //     const lose = new Label({
+    //         text: "You Lost!",
+    //         size: 50,
+    //         color: white,
+    //         shadowColor: black,
+    //         shadowBlur: 5
+    //     }).center(paneLost).mov(0, -75);
+
+    //     const loseImage = asset("germ.png")
+    //         .clone()
+    //         .centerReg(paneLost)
+    //         .sca(3)
+    //         .alp(.2)
+    //         .mov(-150, -150)
+    //         .setMask(paneLost.backing);
+
+    //    const loseImage2 = asset("germ.png")
+    //         .clone()
+    //         .centerReg(paneLost)
+    //         .sca(2)
+    //         .alp(.2)
+    //         .mov(200, 50)
+    //         .setMask(paneLost.backing);
+
+    //     const play = new Label({
+    //        text: "Play Again?",
+    //        size: 40,
+    //        color: white
+    //    });
+
+    //    const start = new Button({
+    //        width: 250,
+    //        height: 75,
+    //        label: play,
+    //        backgroundColor: "#6d130e",
+    //        rollBackgroundColor: "#c52c27",
+    //        corner:10,
+    //        shadowColor: "rgba(0, 0, 0, .7)"
+    //    }).pos(0, 130, CENTER, BOTTOM, paneLost).tap(() => {
+    //        zgo("Covid_19_Game.html");
+    //    });
+   // }
+
+   const creditsLabel = new Label({
+            text: "Credit to Position Music and Tom Player for background music. Credit to Needed Sound Effects on Youtube for suction effect.",
+            align: "center",
+            lineWidth: 600,
+            size: 20,
+            color: white
+        }).center().alp(.4).pos(0, 30, CENTER, BOTTOM);
+
+   startGame();
+   function startGame(){
+       zog("startGame");
+
+       const background = asset("background4.jpg").centerReg().sca(.7).alp(.6);
+
+       const intro = new Pane({
+           width: 700,
+           height:700,
+           displayClose:false,
+           backdropClose: false,
+           corner: [350, 350, 350, 350],
+           backgroundColor: "#3b393a",
+           backdropColor: "rgba(0, 0, 0, .2)",
+       }).show();
+
+       const covidImage = asset("germ.png")
+            .clone()
+            .centerReg(intro)
+            .sca(3)
+            .alp(.2)
+            .mov(-150, -150)
+            .setMask(intro.backing);
+
+       const covidImage2 = asset("germ.png")
+            .clone()
+            .centerReg(intro)
+            .sca(2)
+            .alp(.2)
+            .mov(200, 50)
+            .setMask(intro.backing);
+
+        const covidImage3 = asset("germ.png")
+            .clone()
+            .centerReg(intro)
+            .sca(1.5)
+            .alp(.2)
+            .mov(-100, 250)
+            .setMask(intro.backing);
+
+       const gameName = new Label({
+           text: "Covid-19 BlockBreaker",
+           size: 50,
+           color: white,
+           shadowColor: black,
+           shadowBlur: 5
+       }).center(intro).mov(0, -175);
+
+       const instructions = new Label({
+           text: "Deflect 15 Covid-19 germs away from the people and into the tube to win!",
+           lineWidth: 600,
+           lineHeight: 50,
+           align: "center",
+           size: 35,
+           color: white,
+           shadowColor: black,
+           shadowBlur: 5
+       }).center(intro).mov(0, -20);
+
+       const controls = new Label({
+           text: "Click and drag the mask to play!",
+           align: "center",
+           size: 25,
+           color: white,
+           shadowColor: black,
+           shadowBlur: 5
+       }).center(intro).mov(0, 80);
+
+       const play = new Label({
+           text: "Play",
+           size: 40,
+           color: white
+       });
+
+       const start = new Button({
+           width: 250,
+           height: 75,
+           label: play,
+           backgroundColor: "#6d130e",
+           rollBackgroundColor: "#c52c27",
+           corner:10,
+           shadowColor: black
+       }).pos(0, 100, CENTER, BOTTOM, intro).tap(() => {
+           intro.hide();
+           playGame();
+           stage.update();
+       });
+
+   }; //end of startGame();
+
+
+    function playGame() {
+
+        asset("music.mp3").play({volume:.1});
+
+        creditsLabel.animate({
+            props:{alpha:0},
+            time: .1
+        });
+
+        const physics = new Physics({gravity:1.2});
+        physics.remove(physics.borderTop);
+        //physics.debug();
+
+        //const background = asset("background3.jpg").centerReg().sca(.7).alp(.6);
+
+        //create mask for bouncing off germs
+        //obj.addPhysics(dynamic, contract, shape, friction, linear, angular, density, bounciness, maskBits, categoryBits, physics, restitution)
+
+        // const mask = new Rectangle(300, 50)
+        //     .centerReg()
+        //     .mov(0, 250)
+        //     .addPhysics({
+        //         linear: 2,
+        //         angular: 2000,
+        //         friction:0,
+        //         density: 5
+        //     });
+
+        // const mask = asset("mask.png")
+        //     .centerReg()
+        //     .sca(.6)
+        //     .mov(0, 150)
+        //     .addPhysics({
+        //         linear: 2,
+        //         angular: 2000,
+        //         friction: 0,
+        //         density:5
+        //     });
+
+        // Dan's version of mask *************************************
+        // const mask2 = new Rectangle(300, 50)
+        //     .rot(45)
+        //     .centerReg()
+        //     .addPhysics({dynamic:false});
+
+        // const mask =new Rectangle(300, 50)
+        //     .rot(45)
+        //     .centerReg()
+        //     .mov(0,0).drag(new Boundary(0,0,stageW/1.5,stageH/1.5)); 
+        
+        // mask.on("pressmove", ()=>{
+        //       mask2.body.x=mask.x
+        //       mask2.body.y=mask.y 
+        // })
+
+        
+        // motion controller can go here (physics drag is now controlling the mask)
+        // mask.control({speed:900});
+        //physics.drag(mask);
+
+        //counter
+        const counter = new Scorer({
+            score:0,
+            size: 50,
+            backgroundColor: faint,
+            color: white,
+            width: 50
+        }).centerReg().loc(968, 174);
+
+
+        // people
+        const mankind = new Rectangle(stageW, 235, faint)
+            .centerReg()
+            .pos(0, 0, CENTER, BOTTOM)
+            .addPhysics({dynamic: false});
+
+        const people = asset("people2.png")
+        .centerReg()
+        .sca(.8)
+        .pos(0, 0, CENTER, BOTTOM);
+
+        const mask = asset("mask.png")
+            .centerReg()
+            .sca(.6)
+            .mov(0, 150)
+            .addPhysics({
+                linear: 2,
+                angular: 2000,
+                friction: 0,
+                density:5
+            });
+
+        physics.drag(mask);
+        
+        // we can add a diagonal cone shape in front of this contact point of the suction tube
+
+        const tube = new Rectangle()
+            .centerReg().loc(973, 30)
+            .addPhysics({
+                dynamic: false,
+                contract: 50
+            });
+
+        const tube2 = asset("tube.png")
+            .centerReg()
+            .rot(30)
+            .loc(968, 12);
+            //.addPhysics({dynamic: false, contract: 50});
+
+        
+        // setup the germ counters and create germs with interval
+        let germNum = 0;
+        let germCaught = 0;
+        
+        const germ = asset("germ.png");
+        germ.sca(.7);
+        // const germ = new Circle(40, blue)
+        const germInt = interval({min:.5, max:3}, () => {
+            if (germNum < 12) {
+                germNum++;
+                zogo(germNum);
+                germ.clone()
+                .centerReg()
+                .loc(rand(60, stageW-60), -50, germsContainer)
+                .addPhysics({
+                    shape: "circle",
+                    contract: 10,
+                    bounciness: 1.2,
+                    friction: .6,
+                    linear: 1.2,
+                    angular: .9
+                })
+            }
+        });
+
+
+        // setting the pushing impulse from bottom
+        const germsContainer = new Container().center();
+        let pushX, pushY = 0;
+        
+        const time = timeout(6, () => {
+            interval({min:.3, max:1}, () => {
+            pushX = rand(-40, 40);
+            pushY = rand(-30, -10);
+            //zogo(germsContainer.children[rand(0, germsContainer.numChildren-1)]);
+            germsContainer.children[rand(0, germsContainer.numChildren-1)].impulse(pushX, pushY);
+            });
+            interval({min:1, max:3}, () => {
+            pushX = rand(-50, 50);
+            pushY = rand(-50, -10);
+            //zogo(germsContainer.children[rand(0, germsContainer.numChildren-1)]);
+            germsContainer.children[rand(0, germsContainer.numChildren-1)].impulse(pushX, pushY);
+            });
+        });
+        
+
+        //add pulling force to "suck" the germs away from a tube
+        let strength = 0;
+        
+        interval({min:8, max:15}, () => {
+            strength = 60;
+            //zogo(strength);
+            timeout(rand(3, 6), () => {
+                strength = -4;
+                //zogo(strength);
+            });
+        });
+
+
+        // winning logic panes
+        //const paneWon = new Pane(300,200,"You Won!",yellow);
+        const paneWon = new Pane({
+            width: 500,
+            height:500,
+            displayClose:false,
+            backdropClose: false,
+            corner: [250, 250, 250, 250],
+            backgroundColor: "#6d130e",
+            backdropColor: "rgba(0, 0, 0, .2)",
+        });
+        const win = new Label({
+            text: "You Won!",
+            size: 50,
+            color: white,
+            shadowColor: black,
+           shadowBlur: 5
+        }).center(paneWon).mov(0, -75);
+
+        const winImage = asset("germ.png")
+            .clone()
+            .centerReg(paneWon)
+            .sca(3)
+            .alp(.2)
+            .mov(-150, -150)
+            .setMask(paneWon.backing);
+
+       const winImage2 = asset("germ.png")
+            .clone()
+            .centerReg(paneWon)
+            .sca(2)
+            .alp(.2)
+            .mov(200, 50)
+            .setMask(paneWon.backing);
+
+        const playWin = new Label({
+           text: "Play Again?",
+           size: 40,
+           color: white,
+       });
+
+       const start = new Button({
+           width: 250,
+           height: 75,
+           label: playWin,
+           backgroundColor: "#3b393a",
+           rollBackgroundColor: "#2d2b2c",
+           corner:10,
+           shadowColor: "rgba(0, 0, 0, .7)"
+       }).pos(0, 130, CENTER, BOTTOM, paneWon).tap(() => {
+           zgo("Covid_19_Game.html");
+       });
+
+       const paneLost = new Pane({
+            width: 500,
+            height:500,
+            displayClose:false,
+            backdropClose: false,
+            corner: [250, 250, 250, 250],
+            backgroundColor: "#3b393a",
+            backdropColor: "rgba(109, 19, 14, .5)",
+        });
+
+        const lose = new Label({
+            text: "You Lost!",
+            size: 50,
+            color: white,
+            shadowColor: black,
+            shadowBlur: 5
+        }).center(paneLost).mov(0, -75);
+
+        const loseImage = asset("germ.png")
+            .clone()
+            .centerReg(paneLost)
+            .sca(3)
+            .alp(.2)
+            .mov(-150, -150)
+            .setMask(paneLost.backing);
+
+       const loseImage2 = asset("germ.png")
+            .clone()
+            .centerReg(paneLost)
+            .sca(2)
+            .alp(.2)
+            .mov(200, 50)
+            .setMask(paneLost.backing);
+
+        const playAgain = new Label({
+           text: "Play Again?",
+           size: 40,
+           color: white
+       });
+
+       const startLost = new Button({
+           width: 250,
+           height: 75,
+           label: playAgain,
+           backgroundColor: "#6d130e",
+           rollBackgroundColor: "#c52c27",
+           corner:10,
+           shadowColor: "rgba(0, 0, 0, .7)"
+       }).pos(0, 130, CENTER, BOTTOM, paneLost).tap(() => {
+           zgo("Covid_19_Game.html");
+       });
+        
+        const tick = Ticker.add(() => {
+            germsContainer.loop((germ, i) => {
+                //zog("found germ # " + (i+1) );
+                germ.torque(2);
+                // zogo(germ.x);
+                if (germ.x > -100 && germ.y > -400 && germ.y < -200 ) {
+                    germ.force(strength, -strength);
+                }
+                
+                germ.contact(o => {
+                //zogo(o);
+                if(o.type == "Rectangle" && o.width == 100) {
+                    germ.removePhysics();
+                    germ.removeFrom(germsContainer);
+                    germNum--;
+                    germCaught++;
+                    counter.score = counter.score + 1;
+                    asset("suction_1.mp3").play({volume:.2});
+
+                } else if(o.type == "Rectangle" && o.width == 1024) {
+                    paneLost.show();
+                }
+            });
+            
+            if (germCaught >= 15 | germNum == 0) {
+                paneWon.show();
+                germInt.pause();
+                germsContainer.removeFrom(stage);
+            }
+
+            });
+        });
+
+        frame.on("resize", physics.updateDebug);
+
+        stage.update(); // this is needed to show any changes
+    
+    };// end of play function, remove self-calling when ready
+
+
+}); // end of ready
+
+</script>
+
+<meta name="viewport" content="width=device-width, user-scalable=no" />
+
+</head>
+
+<body>
+<!-- canvas with id="myCanvas" is made by zim Frame -->
+</body>
+</html>
